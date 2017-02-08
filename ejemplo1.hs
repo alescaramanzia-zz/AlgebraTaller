@@ -38,7 +38,10 @@ esPositiva :: Float -> Bool
 esPositiva x | x >= 0 = True
 			 | otherwise = False
 
-resultadoCurso :: Integer -> Integer -> Integer -> String
+resultadoCurso :: Float -> Float -> Float -> String
 resultadoCurso n1 n2 tp | (n1+n2+tp)/3 >= 7 = "Promocionado"
 						| (n1+n2+tp)/3 < 4 = "No Aprobado"
 						| otherwise = "A final"
+
+distancia :: (Float, Float) -> (Float, Float) -> Float
+distancia (x1,y1) (x2, y2) = sqrt((x2-x1)^2+(y2-y1)^2)
