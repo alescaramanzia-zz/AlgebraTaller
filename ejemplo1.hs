@@ -45,3 +45,51 @@ resultadoCurso n1 n2 tp | (n1+n2+tp)/3 >= 7 = "Promocionado"
 
 distancia :: (Float, Float) -> (Float, Float) -> Float
 distancia (x1,y1) (x2, y2) = sqrt((x2-x1)^2+(y2-y1)^2)
+
+inv ::  Float -> Float
+inv x | x /= 0 = 1/x
+
+factorial :: Integer -> Integer
+factorial n | n == 0 = 1
+			| n > 0 = n * ( factorial (n-1))
+
+par :: Integer -> Bool
+par 0 = True
+par 1 = False
+par n = par (n-2)
+
+multiploTres :: Integer -> Bool
+multiploTres n | n == 0 = True
+               | n < 3 = False
+               |otherwise = multiploTres (n-3)
+
+sumaImpares :: Integer -> Integer
+sumaImpares n | n == 1 = 1
+			  | n > 1 = sumaImpares (n-1) + (2*n-1)
+
+sumaImparesCuyoCuadSeaMenorQue :: Integer -> Integer
+sumaImparesCuyoCuadSeaMenorQue n | n  == 1 || n == 2 = 1
+								 | (n^2) < n = sumaImparesCuyoCuadSeaMenorQue n + sumaImparesCuyoCuadSeaMenorQue (n+1)
+								 | otherwise = sumaImparesCuyoCuadSeaMenorQue n
+								 --(2n+1)^2 < n
+
+sumaAux :: Integer -> Integer -> Integer
+sumaAux n c | n^2 >= c = 0
+		    | otherwise = n + sumaAux (n+2) c
+
+sumatoriaLista :: [Integer] -> Integer
+sumatoriaLista l | length l == 0 = 0
+				 |otherwise = head l + sumatoriaLista (tail l)
+
+pertenece :: Integer -> [Integer] -> Bool
+pertenece n lista | length lista == 0 = False
+				  | otherwise = head lista == n || pertenece n (tail lista)
+
+repetidos :: [Integer] -> Bool
+repetidos lista | length lista == 0 = False
+				| otherwise = pertenece (head lista) (tail lista) || repetidos (tail lista)
+
+quitar :: Integer -> [Integer] -> [Integer]
+quitar n lista | length lista == 0 = []
+			   | head lista == n = tail lista
+			   | otherwise = head lista : quitar n (tail lista)
