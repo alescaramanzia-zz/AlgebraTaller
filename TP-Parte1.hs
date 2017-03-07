@@ -1,0 +1,52 @@
+type Texto = [Char]
+
+data Mensaje = TextoClaro Texto | CifradoReverso Mensaje deriving (Eq, Show)
+
+crearMensaje :: Texto ->  Mensaje
+crearMensaje (TextoClaro frase) = frase
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
