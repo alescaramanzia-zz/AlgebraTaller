@@ -36,65 +36,98 @@ reversoListaTexto xs = [reverse (head xs)] ++ reversoListaTexto (tail xs)
 textoLista :: [Texto] -> Texto --Usa la función unwords de Prelude para devolver un string formado por los elementos de una lista de strings agregando los espacios entre palabras.
 textoLista xs = unwords xs
 
---ejercicio 7-- --(No se a que se refiere) (Supuse que era cargar lo del ejercicio 1 aca, no se si hay que cargar las demas tambien)--
+--Ejercicio 7--
 
 cifrarReverso :: Mensaje -> Mensaje
---Pertenece a la parte 1--
-cifrarReverso (TextoClaro a)                  = CifradoReverso (TextoClaro (reverse a))
-cifrarReverso (CifradoReverso (TextoClaro a)) = CifradoReverso (TextoClaro (reverse a))
+cifrarReverso (TextoClaro a) = (CifradoReverso (TextoClaro (reverse a)))
 
---extiendo ejercicio 7 para hacer reverso de cifradoCesar y cifradoPalabrasReverso--
---CifradoCesar solo---
-cifrarReverso (CifradoCesar (TextoClaro a) n)                  = CifradoReverso (CifradoCesar (TextoClaro (reverse a)) n)
-cifrarReverso (CifradoReverso (CifradoCesar (TextoClaro a) n)) = CifradoReverso (CifradoCesar (TextoClaro (reverse a)) n)
+-- EJEMPLO DE TP
+-- *Main> cifrarReverso ( cifrarReverso ( TextoClaro " SIEMPRE REVERSO " ) )
+-- CifradoReverso (CifradoReverso (TextoClaro " SIEMPRE REVERSO "))
 
---CifradoPalabrasReverso solo--
-cifrarReverso (CifradoPalabrasReverso (TextoClaro a))                  = CifradoReverso (CifradoPalabrasReverso (TextoClaro (reverse a)))
-cifrarReverso (CifradoReverso (CifradoPalabrasReverso (TextoClaro a))) = CifradoReverso (CifradoPalabrasReverso (TextoClaro (reverse a)))
 
---extiendo ejercicio 7 cifradoCesar y cifradoPalabrasReverso ambas juntas--
-cifrarReverso (CifradoCesar (CifradoPalabrasReverso (TextoClaro a)) n)                  = CifradoReverso (CifradoCesar (CifradoPalabrasReverso (TextoClaro (reverse a))) n)
-cifrarReverso (CifradoReverso (CifradoCesar (CifradoPalabrasReverso (TextoClaro a)) n)) = CifradoReverso (CifradoCesar (CifradoPalabrasReverso (TextoClaro (reverse a))) n)
+cifrarReverso (CifradoReverso k) = CifradoReverso (cifrarReverso k)
+
+-- Dos ejemplos: cuando la función se aplica un número par de veces devuelve el texto normal y si es impar invertido.
+-- *Main> cifrarReverso (cifrarReverso (cifrarReverso (cifrarReverso (cifrarReverso (TextoClaro "PRUEBA UNO")))))
+-- CifradoReverso (CifradoReverso (CifradoReverso (CifradoReverso (CifradoReverso (TextoClaro "ONU ABEURP")))))
+-- *Main> cifrarReverso (cifrarReverso (cifrarReverso (cifrarReverso (cifrarReverso (cifrarReverso (TextoClaro "PRUEBA UNO"))))))
+-- CifradoReverso (CifradoReverso (CifradoReverso (CifradoReverso (CifradoReverso (CifradoReverso (TextoClaro "PRUEBA UNO"))))))
+-- *Main> 
+
+cifrarReverso (CifradoCesar k n) = CifradoCesar (cifrarReverso k) n
+
+-- *Main> cifrarReverso (CifradoCesar (TextoClaro "LSPE XSHS FMIR") 4) 
+-- CifradoCesar (CifradoReverso (TextoClaro "RIMF SHSX EPSL")) 4
+-- *Main> cifrarReverso (CifradoCesar (CifradoReverso (TextoClaro "RIMF SHSX EPSL")) 4)
+-- CifradoCesar (CifradoReverso (CifradoReverso (TextoClaro "LSPE XSHS FMIR"))) 4
+-- *Main> 
+
+cifrarReverso (CifradoPalabrasReverso k) = CifradoPalabrasReverso (cifrarReverso k)
+
+-- *Main> cifrarReverso (CifradoPalabrasReverso (TextoClaro "LINEA C"))
+-- CifradoPalabrasReverso (CifradoReverso (TextoClaro "C AENIL"))
+
+-- *Main> cifrarReverso (cifrarCesar (CifradoPalabrasReverso (CifradoReverso (TextoClaro "HOLA TODO BIEN"))) 3)
+-- CifradoPalabrasReverso (CifradoReverso (CifradoCesar (CifradoReverso (TextoClaro "QHLE RGRW DORK")) 3))
+
+
+
 
 
 --Ejercicio 8--
 
 cifrarCesar :: Mensaje -> Desplazamiento -> Mensaje
---TextoClaro--
-cifrarCesar (TextoClaro a) n                  = CifradoCesar (TextoClaro (cifrarCaracter (a) n)) n
-cifrarCesar (CifradoCesar (TextoClaro a) m) n = CifradoCesar (TextoClaro (cifrarCaracter (a) m)) (n+m) --La suma (n+m) indica el desplazamiento total respecto a la frase sin cifrar.
---CifradoReverso--
-cifrarCesar (CifradoReverso (TextoClaro a)) n                  = CifradoReverso (cifrarCesar (TextoClaro a) n)
-cifrarCesar (CifradoReverso (CifradoCesar (TextoClaro a) n)) m = CifradoReverso (CifradoCesar (TextoClaro (cifrarCaracter (a) m)) (m+n))
+cifrarCesar (TextoClaro a) n = CifradoCesar (TextoClaro (cifrarCaracter (a) n)) n
 
---Ejercicio 8 ampliado sobre cifrarPalabrasReverso y cifrarReverso - cifrarPalabrasReverso.
+-- EJEMPLO DEL TP
 
---CifrarPalabrasReverso--
-cifrarCesar (CifradoPalabrasReverso (TextoClaro a)) n                  = CifradoCesar (CifradoPalabrasReverso (TextoClaro (cifrarCaracter (a) n) )) n
-cifrarCesar (CifradoCesar (CifradoPalabrasReverso (TextoClaro a)) n) m = CifradoCesar (CifradoPalabrasReverso (TextoClaro (cifrarCaracter (a) (m)))) (n+m)
+-- *Main> cifrarCesar ( TextoClaro " LA LETRA A Y LA Z " ) 7
+-- CifradoCesar (TextoClaro " SH SLAYH H F SH G ") 7
 
---CifrarPalabrasReverso con CifradoReverso--
-cifrarCesar (CifradoReverso (CifradoPalabrasReverso (TextoClaro a))) n                  = CifradoReverso (CifradoCesar (CifradoPalabrasReverso (TextoClaro (cifrarCaracter (a) n))) n)
-cifrarCesar (CifradoReverso (CifradoCesar (CifradoPalabrasReverso (TextoClaro a)) n)) m = CifradoReverso (CifradoCesar (CifradoPalabrasReverso (TextoClaro (cifrarCaracter (a) (m)))) (n+m))
+cifrarCesar (CifradoReverso k) n = CifradoReverso (cifrarCesar k n)
 
---ejercicio 9--
+-- *Main> cifrarCesar (CifradoReverso (TextoClaro "QHLE RGRW DORK")) 4
+-- CifradoReverso (CifradoCesar (TextoClaro "ULPI VKVA HSVO") 4)
+-- *Main> cifrarCesar (CifradoReverso (TextoClaro "QHLE RGRW DORK")) (-6) -- Desplazamiento negativo
+-- CifradoReverso (CifradoCesar (TextoClaro "KBFY LALQ XILE") (-6))
+-- *Main> cifrarCesar (CifradoReverso (TextoClaro "QHLE RGRW DORK")) 0 -- Desplazamiento nulo
+-- CifradoReverso (CifradoCesar (TextoClaro "QHLE RGRW DORK") 0)
+
+cifrarCesar (CifradoCesar k m) n = CifradoCesar  (cifrarCesar k n) m
+
+-- *Main> cifrarCesar (CifradoCesar (TextoClaro " SH SLAYH H F SH G ") 7) 5
+-- CifradoCesar (CifradoCesar (TextoClaro " XM XQFDM M K XM L ") 5) 7
+
+cifrarCesar (CifradoPalabrasReverso k) n = CifradoPalabrasReverso (cifrarCesar k n)
+
+-- *Main> cifrarCesar (CifradoPalabrasReverso (CifradoReverso (TextoClaro "HOLA TODO BIEN"))) 3
+-- CifradoPalabrasReverso (CifradoReverso (CifradoCesar (TextoClaro "KROD WRGR ELHQ") 3))
 
 cifrarPalabrasReverso :: Mensaje -> Mensaje
---textoClaro--
 cifrarPalabrasReverso (TextoClaro a)                          = CifradoPalabrasReverso (TextoClaro (textoLista (  reversoListaTexto (listaTexto a)  )  )  )  
-cifrarPalabrasReverso (CifradoPalabrasReverso (TextoClaro a)) = CifradoPalabrasReverso (TextoClaro (textoLista (  reversoListaTexto (listaTexto a)  )  ))
 
---CifradoReverso solo--
-cifrarPalabrasReverso (CifradoReverso (TextoClaro a))                            = CifradoReverso (CifradoPalabrasReverso (TextoClaro (textoLista (  reversoListaTexto (listaTexto a)  )  ) ))
-cifrarPalabrasReverso (CifradoReverso (CifradoPalabrasReverso (TextoClaro a) ) ) = CifradoReverso (CifradoPalabrasReverso (TextoClaro (textoLista (  reversoListaTexto (listaTexto a)  )  ) ))
+-- *Main> cifrarPalabrasReverso (TextoClaro "LINEA C RETIRO CONSTITUCION")
+-- CifradoPalabrasReverso (TextoClaro "AENIL C ORITER NOICUTITSNOC")
 
---CifradoCesar solo--
-cifrarPalabrasReverso (CifradoCesar (TextoClaro a) m)                          = CifradoCesar (CifradoPalabrasReverso (TextoClaro (textoLista (  reversoListaTexto (listaTexto a))))) m
-cifrarPalabrasReverso (CifradoCesar (CifradoPalabrasReverso (TextoClaro a)) m) = CifradoCesar (CifradoPalabrasReverso (TextoClaro (textoLista (reversoListaTexto (listaTexto a))))) m
+cifrarPalabrasReverso (CifradoPalabrasReverso k)              = CifradoPalabrasReverso (cifrarPalabrasReverso k)
 
---CifradoReverso con CifradoCesar--
-cifrarPalabrasReverso (CifradoReverso (CifradoCesar (TextoClaro a) n))                          = CifradoReverso (CifradoCesar (CifradoPalabrasReverso (TextoClaro (textoLista (reversoListaTexto (listaTexto a))) )) n)
-cifrarPalabrasReverso (CifradoReverso (CifradoCesar (CifradoPalabrasReverso (TextoClaro a)) n)) = CifradoReverso (CifradoCesar (CifradoPalabrasReverso (TextoClaro (textoLista (reversoListaTexto (listaTexto a))) )) n)
+-- *Main> cifrarPalabrasReverso (CifradoPalabrasReverso (TextoClaro "AENIL C ORITER NOICUTITSNOC"))
+-- CifradoPalabrasReverso (CifradoPalabrasReverso (TextoClaro "LINEA C RETIRO CONSTITUCION"))
+
+cifrarPalabrasReverso (CifradoReverso k)                      = CifradoReverso (cifrarPalabrasReverso k)
+
+-- *Main> cifrarPalabrasReverso (CifradoReverso (TextoClaro "QHLE RGRW DORK"))
+-- CifradoReverso (CifradoPalabrasReverso (TextoClaro "ELHQ WRGR KROD"))
+
+cifrarPalabrasReverso (CifradoCesar k m)                      = CifradoCesar (cifrarPalabrasReverso k) m
+
+-- *Main> cifrarPalabrasReverso (CifradoCesar (TextoClaro "QHLE RGRW DORK") 0)
+-- CifradoCesar (CifradoPalabrasReverso (TextoClaro "ELHQ WRGR KROD")) 0
+
+-- *Main> cifrarPalabrasReverso (CifradoCesar (CifradoPalabrasReverso (TextoClaro "ELHQ WRGR KROD")) 0)
+-- CifradoCesar (CifradoPalabrasReverso (CifradoPalabrasReverso (TextoClaro "QHLE RGRW DORK"))) 0
+
 
 --ejercicio 10-- --Extiendo funciones que te piden en la parte 2 de la parte 1-- --crearMensaje no lo extiendo pues se valido solo para Texto--
 
@@ -111,23 +144,49 @@ crearMensaje xs | (esPosibleMensaje xs) == True    = TextoClaro xs
 
 descifrar :: Mensaje -> Texto
 descifrar (TextoClaro a) = a
-descifrar (CifradoReverso (TextoClaro a)) = (reverse a)
-
---extiendo descifrar para poder descifrar cualquier mensaje que quiera de acuerdo a las nuevas funciones que tengo--
---aplico 1 operacion sola-- 
+descifrar (CifradoReverso (TextoClaro a)) = reverse a 
 descifrar (CifradoCesar (TextoClaro a) n) = (cifrarCaracter a (n*(-1)))
 descifrar (CifradoPalabrasReverso (TextoClaro a)) = (textoLista (reversoListaTexto (listaTexto a)))
---aplico 2 operaciones a la vez--
-descifrar (CifradoReverso (CifradoCesar (TextoClaro a) n)) = (reverse (cifrarCaracter a (n*(-1))))
-descifrar (CifradoReverso (CifradoPalabrasReverso (TextoClaro a))) = (reverse (textoLista (reversoListaTexto (listaTexto a))))
-descifrar (CifradoCesar (CifradoPalabrasReverso (TextoClaro a)) n) = (cifrarCaracter (textoLista (reversoListaTexto (listaTexto a))) (n*(-1)) )
+
+descifrar (CifradoReverso k) = descifrar (CifradoReverso (descifrar k))
+
+-- descifrar (CifradoReverso k) = CifradoReverso descifrar
+-- descifrar (CifradoReverso (CifradoPalabrasReverso (TextoClaro a))) = (reverse (textoLista (reversoListaTexto (listaTexto a))))
+-- descifrar (CifradoCesar (CifradoPalabrasReverso (TextoClaro a)) n) = (cifrarCaracter (textoLista (reversoListaTexto (listaTexto a))) (n*(-1)) )
 --aplico las 3 operaciones--
-descifrar (CifradoReverso (CifradoCesar (CifradoPalabrasReverso (TextoClaro a)) n)) = (reverse (cifrarCaracter (textoLista (reversoListaTexto (listaTexto a))) (n*(-1)) ) )
+-- descifrar (CifradoReverso (CifradoCesar (CifradoPalabrasReverso (TextoClaro a)) n)) = (reverse (cifrarCaracter (textoLista (reversoListaTexto (listaTexto a))) (n*(-1)) ) )
 
 --extender
--- esAptoReverso :: Mensaje -> Bool
+
 -- extraerMensajeParaEnvio :: Mensaje -> Texto
--- esMensajeCifrado :: Mensaje -> Bool
+-- extraerMensajeParaEnvio (TextoClaro a)                  = (reverse a)
+-- extraerMensajeParaEnvio (CifradoReverso (TextoClaro a)) = a
+-- extraerMensajeParaEnvio (CifradoCesar (TextoClaro a) n) = a
+-- extraerMensajeParaEnvio (CifradoPalabrasReverso (TextoClaro a)) = a
+-- extraerMensajeParaEnvio (CifradoCesar (CifradoPalabrasReverso (TextoClaro a)) n) = a
+-- extraerMensajeParaEnvio (CifradoReverso (CifradoCesar (CifradoPalabrasReverso (TextoClaro a)) n)) = a
+-- extraerMensajeParaEnvio (CifradoCesar (CifradoReverso (CifradoPalabrasReverso (TextoClaro a))) n ) = a
+-- --extraerMensajeParaEnvio (CifradoCesar (CifradoReverso (CifradoPalabrasReverso (TextoClaro a))) n ) = a
+
+--  extraerMensajeParaEnvio :: Mensaje -> Texto
+--  extraerMensajeParaEnvio (TextoClaro a)                  = reverse a
+--  extraerMensajeParaEnvio _ = a
+
+esMensajeCifrado :: Mensaje -> Bool
+
+esMensajeCifrado (CifradoReverso (TextoClaro a)) = True 
+esMensajeCifrado (CifradoCesar (TextoClaro a) n) = True
+esMensajeCifrado (CifradoPalabrasReverso (TextoClaro a)) = True
+esMensajeCifrado (CifradoCesar (CifradoPalabrasReverso (TextoClaro a)) n) = True
+esMensajeCifrado (CifradoReverso (CifradoCesar (CifradoPalabrasReverso (TextoClaro a)) n)) = True
+esMensajeCifrado (CifradoCesar (CifradoReverso (CifradoPalabrasReverso (TextoClaro a))) n ) = True
+esMensajeCifrado (TextoClaro a)                  = False
+
+-- esAptoReverso :: Mensaje -> Bool
+-- esAptoReverso (TextoClaro a)                  | ((a) == (reverse a))                = False
+--                                               | otherwise                           = True
+-- esAptoReverso (CifradoReverso (TextoClaro a)) | ((a) == (reverse a))                = False
+--                                               | otherwise    
 
 --Ejemplos de ejecución--
 
