@@ -1,4 +1,4 @@
---Trabajo Practico -Parte 1
+--Trabajo Practico - Parte 1
 
 --Definiciones propias
 
@@ -9,8 +9,7 @@ type Texto = [Char]
 
 --Funciones auxiliares
 
-esPosibleMensaje :: Texto -> Bool --Verifica que los caracteres ingresados en el string concuerden con los válidos en el TP usando la función elem para 
-                                  --filtrar las mayúsculas y el espacio (se crea una lista que contenga todos los caracteres posibles para cotejar).
+esPosibleMensaje :: Texto -> Bool --Verifica que los caracteres ingresados en el string concuerden con los válidos en el TP usando la función elem para filtrar las mayúsculas y el espacio (se crea una lista que contenga todos los caracteres posibles para cotejar).
 esPosibleMensaje []                                    = False
 esPosibleMensaje [x]    | x `elem` [' ']++['A'..'Z']   = True
 esPosibleMensaje (x:xs) | x `elem` [' ']++['A'..'Z']   = esPosibleMensaje xs

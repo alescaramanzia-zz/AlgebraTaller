@@ -1,77 +1,79 @@
-{-Trabajo Practico Parte 2-}
+--Trabajo Practico - Parte 2
+
+--Definiciones propias
+
 import Data.Char
-data Mensaje = TextoClaro Texto | CifradoReverso Mensaje | CifradoCesar Mensaje Desplazamiento | CifradoPalabrasReverso Mensaje deriving (Eq , Show )
+data Mensaje = TextoClaro Texto | CifradoReverso Mensaje | CifradoCesar Mensaje Desplazamiento | CifradoPalabrasReverso Mensaje 
+        deriving (Eq , Show)
 
 type Texto = [Char]
 type Desplazamiento = Int
 
+--Funciones auxiliares
+
+let2int :: Char -> Int --Tomo los valores numéricos (representación ASCII) del caracter ingresado 'c' y calculo su "distancia" respecto de 'A' (para mayúsculas debe estar entre 0 y 25).
+let2int c = (ord c - ord 'A')
+
+int2let :: Int -> Char --Convierto el valor de comienzo del alfabeto utilizado ('A') y le sumo n (0<n<25) y obtengo el valor numérico del caracter el cuál convierto al caracter.
+int2let n = chr (ord 'A' + n)
+
+desplaza :: Int -> Char -> Char --Dentro del rango ['A'..'Z'] dado un desplazamiento n reemplaza el caracter c por el mismo desplazado n posiciones, si c está fuera del rango devuelve c.
+desplaza n c 
+    | elem c ['A'..'Z'] = int2let ((let2int c + n) `mod` 26)
+    | otherwise         = c
+
+cifrarCaracter :: Texto -> Desplazamiento -> Texto --Cifra un string xs pasado como parámetro con un desplazamiento de n posiciones, la función desplaza limita el cifrado sólo a las mayúsculas.
+cifrarCaracter xs n = [desplaza n x | x <- xs]
+
+listaTexto :: Texto -> [Texto] --Usa la función words de Prelude para dividir un String delimitado por espacios en una lista que contenga como elementos cada palabra del string.
+listaTexto a = words a
+
+reversoListaTexto :: [Texto] -> [Texto] --Invierte cada uno de los elementos de la lista de strings pasada como argumento empezando por el primer elemento y con los siguientes de forma recursiva.
+reversoListaTexto [] = []
+reversoListaTexto xs = [reverse (head xs)] ++ reversoListaTexto (tail xs)
+
+textoLista :: [Texto] -> Texto --Usa la función unwords de Prelude para devolver un string formado por los elementos de una lista de strings agregando los espacios entre palabras.
+textoLista xs = unwords xs
 
 --ejercicio 7-- --(No se a que se refiere) (Supuse que era cargar lo del ejercicio 1 aca, no se si hay que cargar las demas tambien)--
 
 cifrarReverso :: Mensaje -> Mensaje
 --Pertenece a la parte 1--
-cifrarReverso (TextoClaro a) = (CifradoReverso (TextoClaro (reverse a)))
+cifrarReverso (TextoClaro a)                  = CifradoReverso (TextoClaro (reverse a))
 cifrarReverso (CifradoReverso (TextoClaro a)) = CifradoReverso (TextoClaro (reverse a))
 
---extiendo ejercicio 7 para hacer reverso de cifradoCesar y cifradoPalabrasReversa--
---CifradoCeasr solo---
-cifrarReverso (CifradoCesar (TextoClaro a) n) = CifradoReverso (CifradoCesar (TextoClaro (reverse a)) n)
+--extiendo ejercicio 7 para hacer reverso de cifradoCesar y cifradoPalabrasReverso--
+--CifradoCesar solo---
+cifrarReverso (CifradoCesar (TextoClaro a) n)                  = CifradoReverso (CifradoCesar (TextoClaro (reverse a)) n)
 cifrarReverso (CifradoReverso (CifradoCesar (TextoClaro a) n)) = CifradoReverso (CifradoCesar (TextoClaro (reverse a)) n)
 
 --CifradoPalabrasReverso solo--
-cifrarReverso (CifradoPalabrasReverso (TextoClaro a)) = CifradoReverso (CifradoPalabrasReverso (TextoClaro (reverse a)))
+cifrarReverso (CifradoPalabrasReverso (TextoClaro a))                  = CifradoReverso (CifradoPalabrasReverso (TextoClaro (reverse a)))
 cifrarReverso (CifradoReverso (CifradoPalabrasReverso (TextoClaro a))) = CifradoReverso (CifradoPalabrasReverso (TextoClaro (reverse a)))
 
 --extiendo ejercicio 7 cifradoCesar y cifradoPalabrasReverso ambas juntas--
-cifrarReverso (CifradoCesar (CifradoPalabrasReverso (TextoClaro a)) n) = CifradoReverso (CifradoCesar (CifradoPalabrasReverso (TextoClaro (reverse a))) n)
+cifrarReverso (CifradoCesar (CifradoPalabrasReverso (TextoClaro a)) n)                  = CifradoReverso (CifradoCesar (CifradoPalabrasReverso (TextoClaro (reverse a))) n)
 cifrarReverso (CifradoReverso (CifradoCesar (CifradoPalabrasReverso (TextoClaro a)) n)) = CifradoReverso (CifradoCesar (CifradoPalabrasReverso (TextoClaro (reverse a))) n)
 
 
---ejercicio 8 bis -- --Primero hago la sugerencia --
-let2int :: Char -> Int
-let2int c = (ord c - ord 'A')
-
-int2let :: Int -> Char
-int2let n = chr (ord 'A' + n)
-
-desplaza :: Int -> Char -> Char
-desplaza n c 
-    | elem c ['A'..'Z'] = int2let ((let2int c + n) `mod` 26)
-    | otherwise         = c
-
-cifrarCaracter :: Texto -> Desplazamiento -> Texto
-cifrarCaracter xs n = [desplaza n x | x <- xs]
-
---ejercicio 8--  --cifrarCesar la programe para que se utilize en el orden (CifradoReverso -> CifradoCesar -> CifradoPalabrasRverso -> TextoClaro) como muestra el ejemplo del tp --
+--Ejercicio 8 - 
 cifrarCesar :: Mensaje -> Desplazamiento -> Mensaje
 --TextoClaro--
-cifrarCesar (TextoClaro a) n = (CifradoCesar (TextoClaro (cifrarCaracter (a) n)) n)
-cifrarCesar (CifradoCesar (TextoClaro a) m) n = (CifradoCesar (TextoClaro (cifrarCaracter (a) (m))) (n+m))
+cifrarCesar (TextoClaro a) n                  = CifradoCesar (TextoClaro (cifrarCaracter (a) n)) n
+cifrarCesar (CifradoCesar (TextoClaro a) m) n = CifradoCesar (TextoClaro (cifrarCaracter (a) m)) (n+m) --La suma (n+m) indica el desplazamiento total respecto a la frase sin cifrar
 --CifradoReverso--
-cifrarCesar (CifradoReverso (TextoClaro a)) n = (CifradoReverso (cifrarCesar (TextoClaro a) n))
-cifrarCesar (CifradoReverso (CifradoCesar (TextoClaro a) n)) m = (CifradoReverso (CifradoCesar (TextoClaro (cifrarCaracter (a) m)) (m+n)))
+cifrarCesar (CifradoReverso (TextoClaro a)) n                  = CifradoReverso (cifrarCesar (TextoClaro a) n)
+cifrarCesar (CifradoReverso (CifradoCesar (TextoClaro a) n)) m = CifradoReverso (CifradoCesar (TextoClaro (cifrarCaracter (a) m)) (m+n))
 
 --ejercicio 8 ampliado sobre cifrarPalabrasReverso y cifrarReverso combinado cifrarPalabrasReverso--
 
 --CifrarPalabrasReverso--
-cifrarCesar (CifradoPalabrasReverso (TextoClaro a)) n = CifradoCesar (CifradoPalabrasReverso (TextoClaro (cifrarCaracter (a) n) )) n
+cifrarCesar (CifradoPalabrasReverso (TextoClaro a)) n                  = CifradoCesar (CifradoPalabrasReverso (TextoClaro (cifrarCaracter (a) n) )) n
 cifrarCesar (CifradoCesar (CifradoPalabrasReverso (TextoClaro a)) n) m = CifradoCesar (CifradoPalabrasReverso (TextoClaro (cifrarCaracter (a) (m)))) (n+m)
 
 --CifrarPalabrasReverso con CifradoReverso--
-cifrarCesar (CifradoReverso (CifradoPalabrasReverso (TextoClaro a))) n = (CifradoReverso (CifradoCesar (CifradoPalabrasReverso (TextoClaro (cifrarCaracter (a) n))) n))
+cifrarCesar (CifradoReverso (CifradoPalabrasReverso (TextoClaro a))) n                  = (CifradoReverso (CifradoCesar (CifradoPalabrasReverso (TextoClaro (cifrarCaracter (a) n))) n))
 cifrarCesar (CifradoReverso (CifradoCesar (CifradoPalabrasReverso (TextoClaro a)) n)) m = (CifradoReverso (CifradoCesar (CifradoPalabrasReverso (TextoClaro (cifrarCaracter (a) (m)))) (n+m)))
-
-
---ejercicio 9 bis-- --Funciones auxiliares y operaciones de haskell words, unwords--
-listaTexto :: Texto -> [Texto]
-listaTexto a = words a
-
-reversoListaTexto :: [Texto] -> [Texto]
-reversoListaTexto [] = []
-reversoListaTexto xs = [(reverse (head xs))] ++ reversoListaTexto (tail xs)
-
-textoLista :: [Texto] -> Texto
-textoLista xs = unwords xs
 
 --ejercicio 9--
 cifrarPalabrasReverso :: Mensaje -> Mensaje
@@ -96,10 +98,10 @@ esPosibleMensaje :: Texto -> Bool  --Cuando Hago esPosibleMensaje "CaracterValid
 --esPosibelMensaje "CaracterValido,CaracterNoValido" anda bien, solo "CaracterNoValido en la 2da posicion no da error puse posibles formas de matarlo ninguna me anduvo"
 esPosibleMensaje []   = False
 
-esPosibleMensaje [x]  | (x `elem` ['A','B','C','D','E','F','G','H','I','J','K','L','M','N','Ñ','O','P','Q','R','S','T','U','V','W','X','Y','Z',' ']) = True
+esPosibleMensaje [x]  | (x `elem` [' ']++['A'..'Z']) = True
                       | otherwise                                                                                                                    = False
 
-esPosibleMensaje [x,y] | (x `elem` ['A','B','C','D','E','F','G','H','I','J','K','L','M','N','Ñ','O','P','Q','R','S','T','U','V','W','X','Y','Z',' ']) && (y `elem` ['A','B','C','D','E','F','G','H','I','J','K','L','M','N','Ñ','O','P','Q','R','S','T','U','V','W','X','Y','Z',' '])  = True
+esPosibleMensaje [x,y] | (x `elem` [' ']++['A'..'Z']) && (y `elem` [' ']++['A'..'Z'])  = True
                        | otherwise                                                                                                                                                                                                                                                     = False
 
 esPosibleMensaje (x:xs) | ((length xs) == 1)                                                                                                                                = esPosibleMensaje [x]
@@ -129,3 +131,10 @@ descifrar (CifradoCesar (CifradoPalabrasReverso (TextoClaro a)) n) = (cifrarCara
 
 --aplico las 3 operaciones--
 descifrar (CifradoReverso (CifradoCesar (CifradoPalabrasReverso (TextoClaro a)) n)) = (reverse (cifrarCaracter (textoLista (reversoListaTexto (listaTexto a))) (n*(-1)) ) )
+
+--Ejemplos de ejecución--
+
+
+
+-- Miraglia, Jorge - 666/17 - Jorge10192@live.com.ar
+-- Arriondo, Alexis - 234/17 - alescaramanzia@gmail.com
