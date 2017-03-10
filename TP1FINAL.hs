@@ -28,6 +28,10 @@ crearMensaje xs | (esPosibleMensaje xs) == True = TextoClaro xs
 -- TextoClaro "    "
 -- *Main> crearMensaje ("1234")
 -- TextoClaro "ERROR"
+-- *Main> crearMensaje " -PRIMERA PRUEBA"
+-- TextoClaro "ERROR"
+-- *Main> crearMensaje "92PRIMERA PRUEBA"
+-- TextoClaro "ERROR"
 
 --Ejercicio 2--
 
@@ -78,13 +82,13 @@ descifrar :: Mensaje -> Texto
 descifrar (TextoClaro a)                  = a
 descifrar (CifradoReverso k)              = (reverse (descifrar k))
 
---EJEMPLO DEL TP
+-- EJEMPLO DEL TP
 -- *Main> descifrar ( CifradoReverso ( TextoClaro " OSREVER ERPMEIS "))
 -- " SIEMPRE REVERSO "
 
--- *Main> descifrar (cifrarReverso (CifradoReverso (cifrarReverso (CifradoReverso (cifrarReverso (TextoClaro "HASKELL MANDAAAA"))))))
+-- *Main> descifrar (CifradoReverso (CifradoReverso (CifradoReverso (CifradoReverso (CifradoReverso (TextoClaro "AAAADNAM LLEKSAH"))))))
 -- "HASKELL MANDAAAA"
--- *Main> descifrar (cifrarReverso (cifrarReverso (cifrarReverso (cifrarReverso (cifrarReverso (TextoClaro "HOLA AMIGO MIO"))))))
+-- *Main> descifrar (CifradoReverso (CifradoReverso (CifradoReverso (CifradoReverso (CifradoReverso (TextoClaro "OIM OGIMA ALOH"))))))
 -- "HOLA AMIGO MIO"
 -- *Main> descifrar (cifrarReverso (cifrarReverso (cifrarReverso (cifrarReverso (TextoClaro "HOLA AMIGO MIO")))))
 -- "HOLA AMIGO MIO"
@@ -92,66 +96,28 @@ descifrar (CifradoReverso k)              = (reverse (descifrar k))
 --Ejercicio 6-- 
 
 esAptoReverso :: Mensaje -> Bool
-esAptoReverso k | extraerMensajeParaEnvio k == descifrar k          = False
-                | otherwise                                         = True
+esAptoReverso (TextoClaro a)             = a /= reverse a                                                        
+esAptoReverso (CifradoReverso k)         = descifrar (CifradoReverso k) /= reverse (descifrar(CifradoReverso k))
 
--- *Main> esAptoReverso (TextoClaro "HOLA AMIGO MIO ")
+-- EJEMPLO DEL TP --
+-- *Main > esAptoReverso ( TextoClaro "NEUQUEN")
 -- False
--- *Main> esAptoReverso (cifrarCesar (TextoClaro "HOLA AMIGO") 0)
+-- *Main > esAptoReverso ( cifrarReverso ( crearMensaje "ANANA"))
 -- False
--- *Main> esAptoReverso (cifrarReverso (cifrarReverso (cifrarReverso (cifrarReverso (cifrarReverso (TextoClaro "HOLA AMIGO MIO"))))))
--- True
--- *Main> esAptoReverso (cifrarReverso (cifrarReverso (cifrarReverso (cifrarReverso (cifrarReverso (cifrarReverso (TextoClaro "HOLA AMIGO MIO")))))))
+-- *Main > esAptoReverso ( cifrarReverso ( crearMensaje "NEUQUEN"))
 -- False
--- (Le agrego un cifrarReverso mas que la anterior) --
+-- *Main > esAptoReverso ( cifrarReverso ( cifrarReverso ( crearMensaje "OJOTA")))
+-- True
 
 
-
--- TE DEJO ESTO COMO LO TENIAS VOS ALEXIS NO SE SI LO VAS A BORRAR O NO
-
---Ejemplos de ejecución--
-
---  11   master  ✔  ghci                              ↑ ✱  ~/g/AlgebraTaller 
--- GHCi, version 7.6.3: http://www.haskell.org/ghc/  :? for help
--- Loading package ghc-prim ... linking ... done.
--- Loading package integer-gmp ... linking ... done.
--- Loading package base ... linking ... done.
--- Prelude> :l TP1
--- [1 of 1] Compiling Main             ( TP1.hs, interpreted )
--- *Main> crearMensaje "PRIMERA PRUEBA"
--- TextoClaro "PRIMERA PRUEBA"
--- *Main> crearMensaje " -PRIMERA PRUEBA"
--- TextoClaro "ERROR"
--- *Main> crearMensaje "92PRIMERA PRUEBA"
--- TextoClaro "ERROR"
--- *Main> esMensajeCifrado (TextoClaro "PRIMERA PRUEBA")
+-- *Main> esAptoReverso (cifrarReverso (CifradoReverso (cifrarReverso (cifrarReverso (CifradoReverso (CifradoReverso (TextoClaro "ATALEDEMONIACOCAINOMEDELATA")))))))
 -- False
--- *Main> cifrarReverso (TextoClaro "PRIMERA PRUEBA")
--- CifradoReverso (TextoClaro "ABEURP AREMIRP")
--- *Main> esMensajeCifrado (CifradoReverso (TextoClaro "ABEURP AREMIRP"))
+-- *Main> esAptoReverso (cifrarReverso (CifradoReverso (cifrarReverso (cifrarReverso (CifradoReverso (CifradoReverso (TextoClaro "ATALE DEMONIACO CAIN O ME DELATA")))))))
 -- True
--- *Main> extraerMensajeParaEnvio (TextoClaro "PRIMERA PRUEBA")
--- "ABEURP AREMIRP"
--- *Main> extraerMensajeParaEnvio (CifradoReverso (TextoClaro "ABEURP AREMIRP"))
--- "ABEURP AREMIRP"
--- *Main> descifrar (TextoClaro "PRIMERA PRUEBA")
--- "PRIMERA PRUEBA"
--- *Main> descifrar (CifradoReverso (TextoClaro "ABEURP AREMIRP"))
--- "PRIMERA PRUEBA"
--- *Main> esAptoReverso (TextoClaro "PRIMERA PRUEBA")
--- True
--- *Main> esAptoReverso (CifradoReverso (TextoClaro "ABEURP AREMIRP"))
--- True
--- *Main> esAptoReverso (TextoClaro "FIBRON")
--- True
--- *Main> esAptoReverso ( cifrarReverso ( cifrarReverso ( crearMensaje " OJOTA") ) )
--- True
--- *Main> esAptoReverso ( cifrarReverso ( cifrarReverso ( crearMensaje " RECONOCER ") ) )
--- False
+
 
 --Bibliografía utilizada
 
---http://www.glc.us.es/~jalonso/vestigium/i1m2012-el-cifrado-cesar-en-haskell/ (buscamos comprar estructura de nuestra funcion de cifradoCesar con otras)
 --http://www.haskell.org/hoogle/ (para buscar expresiones y funciones en detalle).
 --Diapositivas del taller
 --http://aprendehaskell.es/
